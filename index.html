@@ -1,0 +1,66 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Dam-daman Klasik - Retro Checkers</title>
+    <link rel="stylesheet" href="styles.css">
+    <!-- Import font retro dari Google Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Press+Start+2P&display=swap" rel="stylesheet">
+</head>
+<body>
+    <!-- Container utama game -->
+    <div class="game-container">
+        <!-- Area papan permainan -->
+        <div class="board-container">
+            <div class="game-header">
+                <div class="game-title">🏁 DAM-DAMAN KLASIK</div>
+                <div class="game-subtitle">Retro Checkers Game</div>
+            </div>
+            <div class="game-board" id="gameBoard"></div>
+        </div>
+        
+        <!-- Panel kontrol -->
+        <div class="control-panel">
+            <h2>🎮 KONTROL PERMAINAN</h2>
+            
+            <!-- Pemilihan tingkat kesulitan -->
+            <div class="difficulty-section">
+                <label for="difficultySelect">⚙️ TINGKAT KESULITAN:</label>
+                <select id="difficultySelect">
+                    <option value="mudah">🟢 MUDAH - Santai</option>
+                    <option value="sedang" selected>🟡 SEDANG - Menantang</option>
+                    <option value="sulit">🔴 SULIT - Veteran</option>
+                </select>
+            </div>
+            
+            <!-- Informasi permainan -->
+            <div class="game-info">
+                <div class="current-turn" id="currentTurn">🔴 GILIRAN: PEMAIN</div>
+                <div class="score-display">
+                    <span class="player-score">🔴 ANDA: <span id="playerScore">12</span></span>
+                    <span class="bot-score">⚫ BOT: <span id="botScore">12</span></span>
+                </div>
+                <div class="game-status" id="gameStatus">Pilih bidak untuk bergerak</div>
+            </div>
+            
+            <!-- Tombol kontrol -->
+            <button class="retro-btn" onclick="startNewGame()">🎯 PERMAINAN BARU</button>
+            <button class="retro-btn" onclick="undoLastMove()" id="undoBtn" disabled>⬅️ BATAL LANGKAH</button>
+            <button class="retro-btn" onclick="toggleSound()" id="soundBtn">🔊 SUARA: ON</button>
+        </div>
+    </div>
+
+    <!-- Modal game over -->
+    <div class="game-over-modal" id="gameOverModal">
+        <div class="modal-content">
+            <h2 id="gameOverTitle">GAME SELESAI!</h2>
+            <p id="gameOverMessage">Pesan kemenangan</p>
+            <button class="retro-btn" onclick="startNewGame(); closeGameOverModal();">🎮 MAIN LAGI</button>
+        </div>
+    </div>
+
+    <!-- Load JavaScript -->
+    <script src="script.js"></script>
+</body>
+</html>

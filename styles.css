@@ -1,0 +1,477 @@
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+body {
+    font-family: 'Press Start 2P', monospace;
+    background: linear-gradient(45deg, #8B4513, #D2691E, #CD853F);
+    background-size: 400% 400%;
+    animation: gradientShift 8s ease infinite;
+    min-height: 100vh;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    color: #2F1B14;
+}
+
+/* Animasi background gradient */
+@keyframes gradientShift {
+    0% { background-position: 0% 50%; }
+    50% { background-position: 100% 50%; }
+    100% { background-position: 0% 50%; }
+}
+
+/* Container utama */
+.game-container {
+    display: flex;
+    gap: 30px;
+    align-items: flex-start;
+    padding: 20px;
+    max-width: 1200px;
+}
+
+/* Header game */
+.game-header {
+    text-align: center;
+    margin-bottom: 20px;
+    background: rgba(139, 69, 19, 0.8);
+    padding: 15px;
+    border-radius: 10px;
+    border: 3px solid #8B4513;
+    box-shadow: inset 0 0 10px rgba(0,0,0,0.3);
+}
+
+.game-title {
+    font-size: 24px;
+    color: #F4E4BC;
+    text-shadow: 2px 2px 4px rgba(0,0,0,0.5);
+    margin-bottom: 5px;
+}
+
+.game-subtitle {
+    font-size: 10px;
+    color: #DEB887;
+    opacity: 0.8;
+}
+
+/* Papan permainan */
+.board-container {
+    background: #8B4513;
+    padding: 20px;
+    border-radius: 15px;
+    box-shadow: 
+        0 0 20px rgba(0,0,0,0.5),
+        inset 0 0 20px rgba(0,0,0,0.2);
+    border: 5px solid #654321;
+    position: relative;
+}
+
+.game-board {
+    width: 480px;
+    height: 480px;
+    display: grid;
+    grid-template-columns: repeat(8, 1fr);
+    grid-template-rows: repeat(8, 1fr);
+    border: 4px solid #2F1B14;
+    border-radius: 8px;
+    overflow: hidden;
+    box-shadow: inset 0 0 15px rgba(0,0,0,0.4);
+    position: relative;
+}
+
+/* Kotak papan */
+.square {
+    width: 60px;
+    height: 60px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    position: relative;
+    cursor: pointer;
+    transition: all 0.3s ease;
+}
+
+.square.light {
+    background: #F4E4BC;
+    background-image: 
+        repeating-linear-gradient(45deg, transparent, transparent 2px, rgba(139,69,19,.1) 2px, rgba(139,69,19,.1) 4px);
+}
+
+.square.dark {
+    background: #8B4513;
+    background-image: 
+        repeating-linear-gradient(45deg, transparent, transparent 2px, rgba(0,0,0,.1) 2px, rgba(0,0,0,.1) 4px);
+}
+
+/* Efek hover pada kotak */
+.square:hover {
+    transform: scale(1.05);
+    box-shadow: inset 0 0 10px rgba(255,215,0,0.3);
+}
+
+/* Kotak yang bisa dipilih untuk gerakan */
+.square.valid-move {
+    background: rgba(255, 215, 0, 0.4) !important;
+    animation: retro-blink 1s infinite;
+    box-shadow: inset 0 0 15px rgba(255,215,0,0.6);
+}
+
+/* Kotak yang dipilih */
+.square.selected {
+    background: rgba(255, 69, 0, 0.6) !important;
+    box-shadow: 
+        inset 0 0 20px rgba(255,69,0,0.8),
+        0 0 10px rgba(255,69,0,0.5);
+    animation: retro-pulse 0.8s infinite;
+}
+
+/* Animasi retro blink untuk valid moves */
+@keyframes retro-blink {
+    0%, 100% { opacity: 1; }
+    50% { opacity: 0.7; }
+}
+
+/* Animasi retro pulse untuk selected square */
+@keyframes retro-pulse {
+    0%, 100% { transform: scale(1); }
+    50% { transform: scale(1.08); }
+}
+
+/* Bidak permainan */
+.piece {
+    width: 45px;
+    height: 45px;
+    border-radius: 50%;
+    border: 3px solid #2F1B14;
+    position: relative;
+    transition: all 0.3s ease;
+    cursor: pointer;
+    box-shadow: 
+        0 4px 8px rgba(0,0,0,0.4),
+        inset 0 2px 4px rgba(255,255,255,0.2);
+}
+
+/* Efek hover pada bidak */
+.piece:hover {
+    transform: scale(1.15);
+    box-shadow: 
+        0 6px 12px rgba(0,0,0,0.5),
+        inset 0 2px 4px rgba(255,255,255,0.3);
+}
+
+/* Bidak merah (pemain) */
+.piece.red {
+    background: radial-gradient(circle at 30% 30%, #FF6B6B, #CC5555, #B22222);
+    border-color: #8B0000;
+}
+
+/* Bidak hitam (bot) */
+.piece.black {
+    background: radial-gradient(circle at 30% 30%, #4A4A4A, #2F2F2F, #1A1A1A);
+    border-color: #000;
+}
+
+/* King pieces dengan mahkota retro */
+.piece.king::after {
+    content: '♛';
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    font-size: 20px;
+    color: #FFD700;
+    text-shadow: 
+        1px 1px 2px rgba(0,0,0,0.8),
+        0 0 5px rgba(255,215,0,0.5);
+    animation: crown-glow 2s ease-in-out infinite;
+}
+
+/* Animasi glow untuk mahkota */
+@keyframes crown-glow {
+    0%, 100% { 
+        text-shadow: 
+            1px 1px 2px rgba(0,0,0,0.8),
+            0 0 5px rgba(255,215,0,0.5);
+    }
+    50% { 
+        text-shadow: 
+            1px 1px 2px rgba(0,0,0,0.8),
+            0 0 15px rgba(255,215,0,0.8);
+    }
+}
+
+/* Panel kontrol */
+.control-panel {
+    background: rgba(139, 69, 19, 0.9);
+    border: 4px solid #654321;
+    border-radius: 15px;
+    padding: 25px;
+    width: 320px;
+    box-shadow: 
+        0 0 20px rgba(0,0,0,0.5),
+        inset 0 0 15px rgba(0,0,0,0.2);
+    color: #F4E4BC;
+}
+
+.control-panel h2 {
+    text-align: center;
+    margin-bottom: 20px;
+    font-size: 16px;
+    color: #FFD700;
+    text-shadow: 2px 2px 4px rgba(0,0,0,0.5);
+}
+
+/* Selector kesulitan */
+.difficulty-section {
+    margin-bottom: 20px;
+    background: rgba(0,0,0,0.2);
+    padding: 15px;
+    border-radius: 8px;
+    border: 2px solid #2F1B14;
+}
+
+.difficulty-section label {
+    display: block;
+    margin-bottom: 10px;
+    font-size: 10px;
+    color: #DEB887;
+}
+
+.difficulty-section select {
+    width: 100%;
+    padding: 8px;
+    border: 2px solid #2F1B14;
+    border-radius: 5px;
+    background: #F4E4BC;
+    color: #2F1B14;
+    font-family: 'Press Start 2P', monospace;
+    font-size: 8px;
+    cursor: pointer;
+}
+
+/* Info permainan */
+.game-info {
+    background: rgba(0,0,0,0.3);
+    border: 2px solid #2F1B14;
+    border-radius: 8px;
+    padding: 15px;
+    margin-bottom: 15px;
+}
+
+.current-turn {
+    text-align: center;
+    font-size: 12px;
+    margin-bottom: 10px;
+    color: #FFD700;
+    text-shadow: 1px 1px 2px rgba(0,0,0,0.5);
+}
+
+.score-display {
+    display: flex;
+    justify-content: space-between;
+    font-size: 10px;
+    margin-bottom: 10px;
+}
+
+.player-score {
+    color: #FF6B6B;
+}
+
+.bot-score {
+    color: #4A4A4A;
+}
+
+.game-status {
+    text-align: center;
+    font-size: 8px;
+    color: #DEB887;
+    font-style: italic;
+}
+
+/* Tombol retro */
+.retro-btn {
+    width: 100%;
+    padding: 12px;
+    border: 3px solid #2F1B14;
+    border-radius: 8px;
+    background: linear-gradient(45deg, #FFD700, #FFA500);
+    color: #2F1B14;
+    font-family: 'Press Start 2P', monospace;
+    font-size: 10px;
+    font-weight: bold;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    margin-bottom: 10px;
+    text-transform: uppercase;
+    box-shadow: 
+        0 4px 8px rgba(0,0,0,0.3),
+        inset 0 2px 4px rgba(255,255,255,0.2);
+}
+
+.retro-btn:hover {
+    transform: translateY(-2px);
+    box-shadow: 
+        0 6px 12px rgba(0,0,0,0.4),
+        inset 0 2px 4px rgba(255,255,255,0.3);
+    background: linear-gradient(45deg, #FFA500, #FFD700);
+}
+
+.retro-btn:active {
+    transform: translateY(0);
+    box-shadow: 
+        0 2px 4px rgba(0,0,0,0.3),
+        inset 0 2px 4px rgba(0,0,0,0.2);
+}
+
+.retro-btn:disabled {
+    opacity: 0.5;
+    cursor: not-allowed;
+    transform: none;
+    background: #888;
+}
+
+/* Modal game over */
+.game-over-modal {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(0,0,0,0.8);
+    display: none;
+    justify-content: center;
+    align-items: center;
+    z-index: 1000;
+    animation: modal-fade-in 0.5s ease;
+}
+
+@keyframes modal-fade-in {
+    from { opacity: 0; }
+    to { opacity: 1; }
+}
+
+.modal-content {
+    background: linear-gradient(45deg, #8B4513, #CD853F);
+    color: #F4E4BC;
+    padding: 30px;
+    border-radius: 15px;
+    text-align: center;
+    border: 4px solid #654321;
+    box-shadow: 0 0 30px rgba(0,0,0,0.7);
+    animation: modal-slide-in 0.5s ease;
+}
+
+@keyframes modal-slide-in {
+    from { transform: scale(0.5); opacity: 0; }
+    to { transform: scale(1); opacity: 1; }
+}
+
+.modal-content h2 {
+    margin-bottom: 15px;
+    font-size: 18px;
+    color: #FFD700;
+    text-shadow: 2px 2px 4px rgba(0,0,0,0.5);
+}
+
+.modal-content p {
+    margin-bottom: 20px;
+    font-size: 10px;
+}
+
+/* Status thinking bot */
+.thinking-indicator {
+    color: #FFD700;
+    font-style: italic;
+    animation: thinking-dots 1.5s infinite;
+}
+
+@keyframes thinking-dots {
+    0%, 20% { content: '🤖 Bot berpikir'; }
+    40% { content: '🤖 Bot berpikir.'; }
+    60% { content: '🤖 Bot berpikir..'; }
+    80%, 100% { content: '🤖 Bot berpikir...'; }
+}
+
+/* Efek retro scanlines */
+.game-board::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: repeating-linear-gradient(
+        0deg,
+        transparent,
+        transparent 2px,
+        rgba(0,0,0,0.03) 2px,
+        rgba(0,0,0,0.03) 4px
+    );
+    pointer-events: none;
+    z-index: 1;
+}
+
+/* Responsive design */
+@media (max-width: 768px) {
+    .game-container {
+        flex-direction: column;
+        align-items: center;
+        gap: 20px;
+    }
+    
+    .game-board {
+        width: 320px;
+        height: 320px;
+    }
+    
+    .square {
+        width: 40px;
+        height: 40px;
+    }
+    
+    .piece {
+        width: 30px;
+        height: 30px;
+    }
+    
+    .control-panel {
+        width: 280px;
+    }
+    
+    .game-title {
+        font-size: 16px;
+    }
+}
+
+@media (max-width: 480px) {
+    .game-board {
+        width: 280px;
+        height: 280px;
+    }
+    
+    .square {
+        width: 35px;
+        height: 35px;
+    }
+    
+    .piece {
+        width: 25px;
+        height: 25px;
+    }
+    
+    .control-panel {
+        width: 250px;
+        padding: 20px;
+    }
+    
+    .game-title {
+        font-size: 14px;
+    }
+    
+    .retro-btn {
+        font-size: 8px;
+        padding: 10px;
+    }
+}
